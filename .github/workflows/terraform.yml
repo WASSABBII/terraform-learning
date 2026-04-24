@@ -1,0 +1,25 @@
+name:  Terraform CI
+
+on:
+  push:
+    branches:
+      - main
+    
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chekout code
+        uses: actions/checkout@v3
+          
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        
+      - name: Terraform init
+        run: terraform init
+        
+      - name: Terraform plan
+        run: terraform plan 
+
+
+
