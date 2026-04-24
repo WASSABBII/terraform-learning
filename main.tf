@@ -7,18 +7,18 @@ terraform {
   }
 }
 
-variable "app_name" {
-    default = "my-app"   
+module "backend" {
+  source = "./modules/file_creator"
+  app_name = "backend"
+  environment = "production"
 }
-variable "environment" {
-  default = "development"
+module "frontend" {
+  source = "./modules/file_creator"
+  app_name = "frontend"
+  environment = "production"
 }
-
-resource "local_file" "config" {
-  filename = "config.txt"
-  content = "App: ${var.app_name}\nEnvironment: ${var.environment}"
-}
-
-output "filename" {
-  value = local_file.config.filename
+module "database" {
+  source   = "./modules/file_creator"
+  app_name = "database"
+  environment = "staging"
 }
