@@ -22,3 +22,8 @@ module "database" {
   app_name = "database"
   environment = "staging"
 }
+resource "local_file" "server" {
+  count = 3
+  filename = "server-${count.index}.txt"
+  content = "server number: ${count.index}" 
+}
