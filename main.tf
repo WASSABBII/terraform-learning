@@ -27,3 +27,8 @@ resource "local_file" "server" {
   filename = "server-${count.index}.txt"
   content = "server number: ${count.index}" 
 }
+resource "local_file" "Gorod" {
+  for_each = toset(["almaty","shymkent","astana"])
+  filename = "${each.key}.txt"
+  content = "City: ${each.key}"
+}
