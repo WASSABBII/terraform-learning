@@ -32,8 +32,4 @@ resource "local_file" "Gorod" {
   filename = "${each.key}.txt"
   content  = "City: ${each.key}"
 }
-resource "local_file" "broken" {
-  filename       = "test.txt"
-  content        = "test"
-  wrong_argument = "это не существуе ffт"
-}
+
