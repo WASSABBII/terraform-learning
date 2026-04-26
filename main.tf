@@ -33,3 +33,22 @@ resource "local_file" "Gorod" {
   content  = "City: ${each.key}"
 }
 
+resource "local_file" "database" {
+  filename   = "postgres.txt"
+  content    = "database config"
+  depends_on = [local_file.data]
+}
+resource "local_file" "data" {
+  filename = "redis.txt"
+  content  = "data config"
+}
+resource "local_file" "backend" {
+  filename   = "backend.txt"
+  content    = "backend config"
+  depends_on = [local_file.data, local_file.database]
+}
+resource "local_file" "frontend" {
+  filename   = "frontend.txt"
+  content    = "Frontend"
+  depends_on = [local_file.data, local_file.database, local_file.backend]
+}
