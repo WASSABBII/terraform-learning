@@ -12,7 +12,7 @@ module "postgres" {
   service_name = "postgres"
   port         = 5432
   environment  = "production"
-  depends_on = [ module.redis ]
+  depends_on   = [module.redis]
 }
 module "redis" {
   source       = "./modules/service"
@@ -25,27 +25,27 @@ module "backend" {
   service_name = "Backend"
   port         = 8080
   environment  = "production"
-  depends_on = [ module.postgres , module.redis ]
+  depends_on   = [module.postgres, module.redis]
 }
 module "frontend" {
   source       = "./modules/service"
   service_name = "Frontend"
   port         = 3000
-  environment  = "production"  
-  depends_on = [ module.redis , module.postgres , module.backend ]
+  environment  = "production"
+  depends_on   = [module.redis, module.postgres, module.backend]
 }
 module "production" {
-  source       = "./modules/environment"
+  source   = "./modules/environment"
   env_name = "production"
-  domain = "dastarhan.kz"
+  domain   = "dastarhan.kz"
 }
 module "staging" {
-  source = "./modules/environment"
+  source   = "./modules/environment"
   env_name = "staging"
-  domain = "staging.dastarhan.kz"
+  domain   = "staging.dastarhan.kz"
 }
 resource "local_file" "servers" {
-  count = 3
+  count    = 3
   filename = "configs/servers/server-${count.index}.txt"
-  content = "Server:${count.index}"
+  content  = "Server:${count.index}"
 }
