@@ -7,48 +7,45 @@ terraform {
   }
 }
 
+module "postgres" {
+  source       = "./modules/service"
+  service_name = "postgres"
+  port         = 5432
+  environment  = "production"
+  depends_on = [ module.redis ]
+}
+module "redis" {
+  source       = "./modules/service"
+  service_name = "redis"
+  port         = 6379
+  environment  = "production"
+}
 module "backend" {
-  source      = "./modules/file_creator"
-  app_name    = "backend"
-  environment = "production"
+  source       = "./modules/service"
+  service_name = "Backend"
+  port         = 8080
+  environment  = "production"
+  depends_on = [ module.postgres , module.redis ]
 }
 module "frontend" {
-  source      = "./modules/file_creator"
-  app_name    = "frontend"
-  environment = "production"
+  source       = "./modules/service"
+  service_name = "Frontend"
+  port         = 3000
+  environment  = "production"  
+  depends_on = [ module.redis , module.postgres , module.backend ]
 }
-module "database" {
-  source      = "./modules/file_creator"
-  app_name    = "database"
-  environment = "staging"
+module "production" {
+  source       = "./modules/environment"
+  env_name = "production"
+  domain = "dastarhan.kz"
 }
-resource "local_file" "server" {
-  count    = 3
-  filename = "server-${count.index}.txt"
-  content  = "server number: ${count.index}"
+module "staging" {
+  source = "./modules/environment"
+  env_name = "staging"
+  domain = "staging.dastarhan.kz"
 }
-resource "local_file" "Gorod" {
-  for_each = toset(["almaty", "shymkent", "astana"])
-  filename = "${each.key}.txt"
-  content  = "City: ${each.key}"
-}
-
-resource "local_file" "database" {
-  filename   = "postgres.txt"
-  content    = "database config"
-  depends_on = [local_file.data]
-}
-resource "local_file" "data" {
-  filename = "redis.txt"
-  content  = "data config"
-}
-resource "local_file" "backend" {
-  filename   = "backend.txt"
-  content    = "backend config"
-  depends_on = [local_file.data, local_file.database]
-}
-resource "local_file" "frontend" {
-  filename   = "frontend.txt"
-  content    = "Frontend"
-  depends_on = [local_file.data, local_file.database, local_file.backend]
+resource "local_file" "servers" {
+  count = 3
+  filename = "configs/servers/server-${count.index}.txt"
+  content = "Server:${count.index}"
 }
